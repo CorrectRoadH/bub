@@ -161,12 +161,14 @@ class Tape:
         for message in new_messages:
             await self.store.append(tape_name, TapeEntry.message(message, **meta))
         if tool_calls:
-            await self.store.append(tape_name, TapeEntry.tool_call(tool_calls, **meta))
+            # Text emitted alongside tool calls rides on the tool_call entry so
+            # context rebuild keeps it in the same assistant message as the calls.
+            await self.store.append(tape_name, TapeEntry.tool_call(tool_calls, content=response_text, **meta))
         if tool_results is not None:
             await self.store.append(tape_name, TapeEntry.tool_result(tool_results, **meta))
         if error is not None and error is not context_error:
             await self.store.append(tape_name, TapeEntry.error(error, **meta))
-        if response_text is not None:
+        if response_text is not None and not tool_calls:
             await self.store.append(
                 tape_name, TapeEntry.message({"role": "assistant", "content": response_text}, **meta)
             )

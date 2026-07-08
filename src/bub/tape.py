@@ -49,8 +49,11 @@ class TapeEntry:
         return cls(id=0, kind="anchor", payload=payload, meta=dict(meta))
 
     @classmethod
-    def tool_call(cls, calls: list[dict[str, Any]], **meta: Any) -> TapeEntry:
-        return cls(id=0, kind="tool_call", payload={"calls": calls}, meta=dict(meta))
+    def tool_call(cls, calls: list[dict[str, Any]], content: str | None = None, **meta: Any) -> TapeEntry:
+        payload: dict[str, Any] = {"calls": calls}
+        if content:
+            payload["content"] = content
+        return cls(id=0, kind="tool_call", payload=payload, meta=dict(meta))
 
     @classmethod
     def tool_result(cls, results: list[Any], **meta: Any) -> TapeEntry:

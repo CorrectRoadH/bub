@@ -137,7 +137,7 @@ class ModelRunner:
                     run_id=run_id,
                     system_prompt=system_prompt,
                     new_messages=new_messages,
-                    response_text=None,
+                    response_text=output.text or None,
                     tool_calls=serialized_tool_calls,
                     tool_results=execution.tool_results,
                     response=output.response,

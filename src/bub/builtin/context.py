@@ -48,7 +48,12 @@ def _append_message_entry(messages: list[dict[str, Any]], entry: TapeEntry) -> N
 def _append_tool_call_entry(messages: list[dict[str, Any]], entry: TapeEntry) -> list[dict[str, Any]]:
     calls = _normalize_tool_calls(entry.payload.get("calls"))
     if calls:
-        messages.append({"role": "assistant", "content": "", "tool_calls": calls})
+        content = entry.payload.get("content")
+        messages.append({
+            "role": "assistant",
+            "content": content if isinstance(content, str) else "",
+            "tool_calls": calls,
+        })
     return calls
 
 
